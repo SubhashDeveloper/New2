@@ -2,6 +2,7 @@ package com.example.subhash.new2;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -36,6 +37,20 @@ public class MainActivity extends AppCompatActivity {
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
     ArrayList<Uri> mArrayUri;
+//http://www.androidmads.info/2015/10/how-to-add-and-remove-grids-in-gridview.html
+//https://www.androidlearning.com/android-upload-multiple-images/
+//    public interface Api {
+//    String BASE_URL = "http://dev1.xicom.us/";
+//
+//    @Multipart
+//    @POST("xttest/get_categories.php")
+//    Call<ResponseBody> upImageMany(@Header("Authorization") String authorization, @Part("Id") RequestBody id, @Part List<MultipartBody.Part> file);
+//}
+//    dynamic grid view
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    String Pref_Name = "Grid";
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
+
             }
         });
     }
