@@ -14,8 +14,19 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private Button btn;
@@ -24,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> imagesEncodedList;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
+    ArrayList<Uri> mArrayUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     cursor.close();
                     Toast.makeText(this, "single image", Toast.LENGTH_SHORT).show();
 
-                    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                     mArrayUri = new ArrayList<Uri>();
                     mArrayUri.add(mImageUri);
                     galleryAdapter = new GalleryAdapter(getApplicationContext(),mArrayUri);
                     gvGallery.setAdapter(galleryAdapter);
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     if (data.getClipData() != null) {
                         Toast.makeText(this, "multiple images", Toast.LENGTH_SHORT).show();
                         ClipData mClipData = data.getClipData();
-                        ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                         mArrayUri = new ArrayList<Uri>();
                         for (int i = 0; i < mClipData.getItemCount(); i++) {
 
                             ClipData.Item item = mClipData.getItemAt(i);
@@ -121,6 +133,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void upload(View view) {
+        Retrofit retrofit=new Retrofit.Builder().baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory
+                        .create())
+                .build();
+        Api api=retrofit.create(Api.class);
+        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "hello");
+        List<MultipartBody.Part> parts = new ArrayList<>();
+
+        for (int i=0; i < mArrayUri.size(); i++){
+            parts.add(prepareFilePart("product_image["+i+"]", mArrayUri.get(i)));
+        }
+        Call<ResponseBody> call=api.upImageMany(id,parts);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(MainActivity.this, "res "+response.message(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error"+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+    private MultipartBody.Part prepareFilePart(String partName, Uri fileUri){
+
+        File file = new File(FileUtils.getPath(this,fileUri));
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+
+        return MultipartBody.Part.createFormData(partName, file.getName(),requestBody);
     }
 }
 
