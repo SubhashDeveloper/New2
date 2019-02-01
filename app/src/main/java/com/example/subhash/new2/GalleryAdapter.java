@@ -55,6 +55,7 @@ public class GalleryAdapter extends BaseAdapter {
         View itemView = inflater.inflate(R.layout.gv_item, parent, false);
 
         ivGallery = (ImageView) itemView.findViewById(R.id.ivGallery);
+        //compress image
         Bitmap bitmapImage = BitmapFactory.decodeFile(FileUtils.getPath(ctx,mArrayUri.get(position)));
         int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
         Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);
