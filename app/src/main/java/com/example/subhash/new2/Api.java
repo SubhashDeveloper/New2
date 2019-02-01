@@ -17,4 +17,5 @@ public interface Api {
     @Multipart
     @POST("xttest/get_categories.php")
     Call<ResponseBody> upImageMany(@Header("Authorization") String authorization, @Part("Id") RequestBody id, @Part List<MultipartBody.Part> file);
+//    change
 }
