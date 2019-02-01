@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i < mArrayUri.size(); i++){
             parts.add(prepareFilePart("product_image["+i+"]", mArrayUri.get(i)));
         }
-        Call<ResponseBody> call=api.upImageMany(id,parts);
+        Call<ResponseBody> call=api.upImageMany("token",id,parts);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
