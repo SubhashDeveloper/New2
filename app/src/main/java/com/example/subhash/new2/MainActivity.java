@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     final String path = FileUtils.getPath(this, mImageUri);
                     Log.d("Single File Selected", path);
                     Toast.makeText(this, "file path "+path, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "path"+imageEncoded, Toast.LENGTH_SHORT).show();
 
                 } else {
                     if (data.getClipData() != null) {
